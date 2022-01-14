@@ -6,7 +6,7 @@ To assess your skills and knowledge about the relevant technologies, we want you
 
 ## Your Task:
 
-Build a simple Ionic mobile application for Android and iOS (v5.8 or latest) using Angular (v12 or latest) that includes:
+Build a simple Ionic mobile application for Android and iOS (v6 or latest) using Angular (v12 or latest) and Capacitor (v3 or latest) that includes:
 - **Login Page to login registered buyers** (also known as „salesman“). Note that if a Non-Buyer registers, an error message should pop up.
 - **Overview Page (only for logged in buyers) to display all running auctions (updated every 20 seconds)**, including
    - vehicle image thumbnail (vehicle images may not show actual vehicles cars on our DEV platform, but only test images)
