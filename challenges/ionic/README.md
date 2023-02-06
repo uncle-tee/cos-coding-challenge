@@ -14,14 +14,12 @@ Build a simple Ionic mobile application for Android and iOS (v6 or latest) using
    - current highest bid value in Euro
    - remaining time in format „00h:00m:00s“
    - information whether the logged in buyer is the highest bidder on an auction
-   
-Please fork the repo and create the Angular project in the directory of this README.
 
 Note that the solution must be coded in Angular using Ionic, as this is the framework we are using internally. 
 No previous professional experience with Angular will be consider when checking the results
 
 You do have 7 days to solve the challenge - in case you need more time to to work out a high quality solution, just let us 
-know and we will adjust the deadline for you. You just need to fork the repository, implement a solution and send the link to coding-challenge@caronsale.de
+know and we will adjust the deadline for you.
 ## Your Resources:
 
 You can find the Swagger documentation of our REST API here (The „Authorize“ feature of Swagger is not working with our API):
@@ -29,6 +27,15 @@ https://api-core-dev.caronsale.de/swagger/#/
 
 The base URL of our REST service is <https://api-core-dev.caronsale.de/api/v1>.
 
+## Steps to submit the challenge:
+
+0. Fork the repo
+1. Create a branch to work in
+2. Create the Ionic project in the directory of this README
+3. Fullfill the above mentioned task to solve the code challenge
+4. Commit and push everything to your branch
+5. Open a PR in your forked repository from your branch to master
+6. Inform <coding-challenge@caronsale.de> that you finished the challenge :)
 
 ## General Hints:
 
@@ -40,7 +47,5 @@ The base URL of our REST service is <https://api-core-dev.caronsale.de/api/v1>.
       - seller-challenge@caronsale.de (PW: `Test123.` - notice the period)
 - The authentication process is part of the challenge, please use any `authentication` endpoint in the "Authentication" section in our Swagger you may consider.
 - Once authenticated use any `buyer` endpoint in the "Auctions" section you may consider. This will offer you automatically a set of auctions filtered for this user (don't use a `public` endpoint, as it will show you only a set of public auctions not connected to the logged in user).
-
-Please send the link to the forked repo to coding-challenge@caronsale.de.
 
 If you have any questions, feel free to contact us via <coding-challenge@caronsale.de>
