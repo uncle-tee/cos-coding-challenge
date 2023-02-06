@@ -5,7 +5,6 @@ Welcome to the CarOnSale Flutter Coding Challenge.
 To assess your skills and knowledge about Flutter and Dart, we want you to build a mobile application for Android and iOS.
 
 ## Your Task:
-Please fork the repo and create the Flutter project in the directory of this README.
 
 Build a Flutter mobile application for Android and iOS that includes:
 - A **login page**
@@ -41,14 +40,21 @@ Build a Flutter mobile application for Android and iOS that includes:
 
 
 You do have 7 days to solve the challenge - in case you need more time to to work out a high quality solution, just let us
-know and we will adjust the deadline for you. You just need to fork the repository, implement a solution and send the link to coding-challenge@caronsale.de
+know and we will adjust the deadline for you.
+
+## Steps to submit the challenge:
+
+0. Fork the repo
+1. Create a branch to work in
+2. Create the Angular project in the directory of this README
+3. Fullfill the above mentioned task to solve the code challenge
+4. Commit and push everything to your branch
+5. Open a PR in your forked repository from your branch to master
+6. Inform <coding-challenge@caronsale.de> that you finished the challenge :)
+
 
 ## General Hints:
 Feel free to use as many dependencies as you want
-
-
-
-Please send the link to the forked repo to coding-challenge@caronsale.de.
 
 Please send us the user name and password to log-in
 
