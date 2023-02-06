@@ -46,7 +46,7 @@ know and we will adjust the deadline for you.
 
 0. Fork the repo
 1. Create a branch to work in
-2. Create the Angular project in the directory of this README
+2. Create the Flutter project in the directory of this README
 3. Fullfill the above mentioned task to solve the code challenge
 4. Commit and push everything to your branch
 5. Open a PR in your forked repository from your branch to master
