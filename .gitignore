@@ -1,2 +1,8 @@
 .idea
 .DS_Store
+/challenges/backend/node_modules
+/challenges/backend/dist
+
+/challenges/**/*.js
+/challenges/**/*.d.ts
+/challenges/**/*.map
