@@ -1,5 +1,9 @@
 {
   "api": {
-    "carOnSale": "http:"
+    "carOnSale": {
+      "url": "https://api-core-dev.caronsale.de/api",
+      "email": "email",
+      "password": "password"
+    }
   }
 }
