@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ICarOnSaleAuctionProcessorResult } from '../interface/ICarOnSaleAuctionProcessorResult';
 import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
@@ -12,22 +13,24 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
     @inject(DependencyIdentifier.CAR_ON_SALE_CLIENT)
     private carOnSaleClient: ICarOnSaleClient,
     @inject(DependencyIdentifier.LOGGER) private logger: ILogger,
-  ) {
-  }
-
+  ) {}
 
   async processor(): Promise<ICarOnSaleAuctionProcessorResult> {
     try {
       let availableAuctions = await this.carOnSaleClient.getRunningAuctions();
       return {
         averageNumberOfBids:
-          CarOnSaleAuctionProcessor.calculateAverageNumberOfBids(availableAuctions),
+          CarOnSaleAuctionProcessor.calculateAverageNumberOfBids(
+            availableAuctions,
+          ),
         averagePercentageOfAuctionProgress:
-          CarOnSaleAuctionProcessor.calculateAveragePercentageOdAuctionProgress(availableAuctions),
+          CarOnSaleAuctionProcessor.calculateAveragePercentageOdAuctionProgress(
+            availableAuctions,
+          ),
         numberOfAuctions: 5,
       };
     } catch (e) {
-      this.logger.error('Failed to process calculate Auctions');
+      this.logger.error(e.message);
       throw e;
     }
   }

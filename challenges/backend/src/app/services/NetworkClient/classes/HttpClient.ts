@@ -1,12 +1,10 @@
-import { IHttpClient } from '../interface/IHttpClient';
 import axios, { AxiosHeaderValue, AxiosInstance, AxiosResponse } from 'axios';
 import { HttpClientException } from '../exceptions/HttpClientException';
-import { injectable, unmanaged } from 'inversify';
 
 export abstract class HttpClient {
   protected axiosInstance: AxiosInstance;
 
-  protected constructor(baseUrl: string) {
+  protected constructor(private readonly baseUrl: string) {
     this.axiosInstance = axios.create({
       baseURL: baseUrl,
     });
@@ -19,8 +17,12 @@ export abstract class HttpClient {
     headers?: { [key: string]: AxiosHeaderValue },
   ): Promise<R> {
     return this.axiosInstance.get(path, {
-      headers: { 'User-Agent': 'agent', ...headers },
+      headers: { 'User-Agent': 'proxy', ...headers },
     });
+  }
+
+  put<Request, Response>(path: string, body: Request): Response {
+    return this.axiosInstance.put(path, body, {}) as Response;
   }
 
   private _initializeResponseInterceptor = () => {
@@ -33,12 +35,7 @@ export abstract class HttpClient {
   private _handleResponse = ({ data }: AxiosResponse) => data;
 
   private _handleError = (error: any) => {
-    if (
-      error &&
-      error.response &&
-      error.response.status >= 400 &&
-      error.response.status <= 499
-    ) {
+    if (error?.response?.status >= 400) {
       throw new HttpClientException(error.response.status, error.response.data);
     }
     throw new Error(error);

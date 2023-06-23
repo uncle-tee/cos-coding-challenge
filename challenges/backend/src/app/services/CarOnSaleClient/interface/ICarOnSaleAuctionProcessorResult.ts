@@ -1,5 +1,4 @@
 export interface ICarOnSaleAuctionProcessorResult {
-
   /**
    * This is the total number of auctions
    */

@@ -25,7 +25,7 @@ export class AuctionMonitorApp {
       );
       Process.exit(0);
     } catch (e) {
-      this.logger.error("Failed to process auctions")
+      this.logger.error('Failed to process auctions');
       Process.exit(-1);
     }
 
