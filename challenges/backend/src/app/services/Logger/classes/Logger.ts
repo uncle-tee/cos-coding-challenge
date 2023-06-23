@@ -5,9 +5,15 @@ import 'reflect-metadata';
 
 @injectable()
 export class Logger implements ILogger {
-  // public constructor() {}
-
   public log(message: string): void {
     console.log(`[LOG]: ${message}`);
+  }
+
+  error(message: string, data?: object): void {
+    if (data) {
+      console.log(`[LOG]: ${message} ==>  payload Data ${data}`);
+    } else {
+      console.log(`[LOG]: ${message}`);
+    }
   }
 }
