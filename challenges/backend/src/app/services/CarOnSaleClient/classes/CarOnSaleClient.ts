@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import {
   ICarOnSaleAuction,
   ICarOnSaleRunningAuctionResponse,
-  ICarOnSaleRunningAuctions,
 } from '../interface/ICarOnSaleAuction';
 import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
@@ -24,7 +23,7 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
   /**
    *
    */
-  async getRunningAuctions(): Promise<ICarOnSaleRunningAuctions> {
+  async getRunningAuctions(): Promise<ICarOnSaleAuction[]> {
     const auctions: ICarOnSaleAuction[] = [];
     let total = 0;
     const limit: number = +config.get<number>('api.carOnSale.limit');
@@ -38,7 +37,7 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
         total = auctionItems.total;
         hasMoreData = auctions.length < auctionItems.total;
       }
-      return { items: auctions, total };
+      return auctions;
     } catch (e) {
       if (e instanceof HttpClientException) {
         this.logger.error(`Fetching Auction Failed`, {

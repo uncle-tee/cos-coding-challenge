@@ -13,8 +13,4 @@ export interface ICarOnSaleRunningAuctionResponse {
   total: number;
 }
 
-export interface ICarOnSaleRunningAuctions extends Omit<ICarOnSaleRunningAuctionResponse, 'page'> {
-
-}
-
 

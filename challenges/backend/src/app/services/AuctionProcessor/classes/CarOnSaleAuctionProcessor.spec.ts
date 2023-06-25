@@ -7,33 +7,30 @@ import { CarOnSaleClient } from '../../CarOnSaleClient/classes/CarOnSaleClient';
 import { Logger } from '../../Logger/classes/Logger';
 import { CarOnSaleException, ErrorMessage } from '../../CarOnSaleClient/exeptions/CarOnSaleException';
 import { afterEach } from 'mocha';
-import { ICarOnSaleRunningAuctions } from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
+import { ICarOnSaleAuction } from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
 
 describe('CarOnSaleAuctionProcessor', () => {
   let auctionProcessor: CarOnSaleAuctionProcessor;
   let mockCarOnSaleClient: sinon.SinonStubbedInstance<ICarOnSaleClient>;
   let mockLogger: sinon.SinonStubbedInstance<ILogger>;
-  let mockAuctions: ICarOnSaleRunningAuctions;
+  let mockAuctions: ICarOnSaleAuction[];
 
   beforeEach(() => {
     mockCarOnSaleClient =
       sinon.createStubInstance<ICarOnSaleClient>(CarOnSaleClient);
     mockLogger = sinon.createStubInstance<ILogger>(Logger);
-    mockAuctions = {
-      total: 2,
-      items: [
-        {
-          currentHighestBidValue: 10,
-          minimumRequiredAsk: 15,
-          numBids: 10,
-        },
-        {
-          currentHighestBidValue: 36,
-          minimumRequiredAsk: 35,
-          numBids: 15,
-        },
-      ],
-    };
+    mockAuctions = [
+      {
+        currentHighestBidValue: 10,
+        minimumRequiredAsk: 15,
+        numBids: 10,
+      },
+      {
+        currentHighestBidValue: 36,
+        minimumRequiredAsk: 35,
+        numBids: 15,
+      },
+    ]
     auctionProcessor = new CarOnSaleAuctionProcessor(
       mockCarOnSaleClient as unknown as ICarOnSaleClient,
       mockLogger as unknown as ILogger,

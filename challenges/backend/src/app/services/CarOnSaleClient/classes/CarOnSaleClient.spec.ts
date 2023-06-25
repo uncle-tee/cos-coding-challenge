@@ -63,7 +63,7 @@ describe('CarOnSaleClient', () => {
 
       const result = await carOnSaleClient.getRunningAuctions();
 
-      expect(result).to.deep.equal({ items: auctions.items, total: auctions.total });
+      expect(result).to.deep.equal(auctions.items);
       expect(mockLogger.error.notCalled).to.be.true;
     });
 
@@ -101,10 +101,7 @@ describe('CarOnSaleClient', () => {
 
       const result = await carOnSaleClient.getRunningAuctions();
 
-      expect(result).to.deep.equal({
-        items: [...firstAuctionCallResult.items, ...secondAuctionResult.items],
-        total: 2,
-      });
+      expect(result).to.deep.equal([...firstAuctionCallResult.items, ...secondAuctionResult.items])
       expect(fetchAuctionsStub.callCount).to.equal(2);
       expect(fetchAuctionsStub.firstCall.calledWithExactly({ limit: 4000, offset: 0 }));
       expect(fetchAuctionsStub.secondCall.calledWithExactly({ limit: 4000, offset: 1 }));
@@ -242,7 +239,7 @@ describe('CarOnSaleClient', () => {
 
       const result = await carOnSaleClient.getRunningAuctions();
 
-      expect(result).to.deep.equal({ items: auctions.items, total: auctions.total });
+      expect(result).to.deep.equal(auctions.items);
       expect(mockLogger.error.notCalled).to.be.true;
     });
 

@@ -9,5 +9,5 @@ export interface ICarOnSaleClient {
    *
    * @return Promise<ICarOnSaleAuction[]>
    */
-  getRunningAuctions(): Promise<ICarOnSaleRunningAuctions>;
+  getRunningAuctions(): Promise<ICarOnSaleAuction[]>;
 }

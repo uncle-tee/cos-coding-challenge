@@ -4,7 +4,7 @@ import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
 import { ICarOnSaleClient } from '../../CarOnSaleClient/interface/ICarOnSaleClient';
 import { ICarOnSaleAuctionProcessor } from '../interface/ICarOnSaleAuctionProcessor';
-import { ICarOnSaleRunningAuctions } from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
+import { ICarOnSaleAuction } from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
 import { ILogger } from '../../Logger/interface/ILogger';
 import { MathUtil } from '../../Util/MathUtil';
 
@@ -24,7 +24,7 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
           this.calculateAverageNumberOfBids(runningAuctions),
         averagePercentageOfAuctionProgress:
           this.calculateAveragePercentageOfAuctionProgress(runningAuctions),
-        numberOfAuctions: runningAuctions.total,
+        numberOfAuctions: runningAuctions.length,
       };
     } catch (e) {
       this.logger.error(e.message);
@@ -37,11 +37,10 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
    * it is the sum of the num of bids of each auction / total number of auctions
    * (1/n) * ∑(i = 1 to n) xᵢ where n represents the total number of auctions in the array
    * and xᵢ represents each individual value of the numberOfBids for each auction
-   * @param total The total number of actions
    * @param auctions
    */
   public calculateAverageNumberOfBids(
-    { total, items: auctions }: ICarOnSaleRunningAuctions,
+    auctions: ICarOnSaleAuction[],
   ): number {
     const auctionBidsCount: number[] = auctions.map(auction => (auction.numBids || 0));
     return MathUtil.findAverage(auctionBidsCount);
@@ -53,11 +52,10 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
    * ((1/n) * ∑(i = 1 to n) xᵢ/xj) * 100
    * Where xᵢ is the currentHighestBid for each auction
    * where xj is the minimumRequiredAsk for each auction
-   * @param total
    * @param auctions
    */
   public calculateAveragePercentageOfAuctionProgress(
-    { total, items: auctions }: ICarOnSaleRunningAuctions,
+    auctions: ICarOnSaleAuction[],
   ): number {
     const sumOfAuctionProgress: number[] = auctions
       .filter(
