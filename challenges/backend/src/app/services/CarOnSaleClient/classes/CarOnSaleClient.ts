@@ -18,7 +18,11 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
   }
 
   /**
-   *
+   *This method gets running auctions from.
+   * Due to uncertainty of the endpoint returning huge amount of records,
+   * Its loops through makes the request using limit and offset and will keep pulling the records until the auctions
+   * in memory is equal to the total count,
+   * @return  Promise<ICarOnSaleAuction[]>
    */
   async getRunningAuctions(): Promise<ICarOnSaleAuction[]> {
     const auctions: ICarOnSaleAuction[] = [];
