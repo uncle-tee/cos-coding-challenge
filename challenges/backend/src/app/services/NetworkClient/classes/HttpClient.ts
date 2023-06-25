@@ -19,7 +19,11 @@ export abstract class HttpClient {
   ): Promise<R> {
     return this.axiosInstance.get(path, {
       params,
-      headers: { 'User-Agent': 'proxy', ...headers },
+      headers: {
+        'User-Agent': 'proxy',
+        Accept: 'application/json',
+        ...headers,
+      },
     });
   }
 

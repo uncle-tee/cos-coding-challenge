@@ -42,7 +42,7 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
       .filter(auction => auction.numBids)
       .reduce(
         (previous, currentValue) =>
-          previous + (+currentValue.numBids / carOnSaltAuctions.length),
+          previous + +currentValue.numBids / carOnSaltAuctions.length,
         0,
       )
       .toFixed(2);
@@ -57,8 +57,12 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
       )
       .reduce((previousValue, currentValue) => {
         const { currentHighestBidValue, minimumRequiredAsk } = currentValue;
-        let percentageAuctionProgress = (currentHighestBidValue / minimumRequiredAsk) * 100;
-        return previousValue + (+percentageAuctionProgress / carOnSaltAuctions.length);
-      }, 0).toFixed(2);
+        let percentageAuctionProgress =
+          (currentHighestBidValue / minimumRequiredAsk) * 100;
+        return (
+          previousValue + +percentageAuctionProgress / carOnSaltAuctions.length
+        );
+      }, 0)
+      .toFixed(2);
   }
 }

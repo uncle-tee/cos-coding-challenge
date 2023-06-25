@@ -23,6 +23,12 @@ export class AuctionMonitorApp {
       this.logger.log(
         `ACTIONS TOTAL BIDS RESULT ${auctionCalculatorResult.numberOfAuctions}`,
       );
+      this.logger.log(
+        `AVERAGE NUMBER OF BIDS ${auctionCalculatorResult.averageNumberOfBids}`,
+      );
+      this.logger.log(
+        `average percentage of the auction progress ${auctionCalculatorResult.averagePercentageOfAuctionProgress}`,
+      );
       Process.exit(0);
     } catch (e) {
       this.logger.error('Failed to process auctions');
