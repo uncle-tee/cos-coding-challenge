@@ -33,8 +33,6 @@ describe('CarOnSaleAuctionProcessor', () => {
   describe('CarOnSaleAuctionProcessor', () => {
     describe('summarizeAuctions', () => {
       it('should return the correct auction processor result', async () => {
-        const expectedAveragePercentageOfAuctionProgress = 6;
-
         const mockAuctions: ICarOnSaleAuction[] = [
           {
             currentHighestBidValue: 10,
