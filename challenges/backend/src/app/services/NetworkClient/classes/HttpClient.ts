@@ -14,9 +14,11 @@ export abstract class HttpClient {
 
   get<R>(
     path: string,
+    params: { [key: string]: string },
     headers?: { [key: string]: AxiosHeaderValue },
   ): Promise<R> {
     return this.axiosInstance.get(path, {
+      params,
       headers: { 'User-Agent': 'proxy', ...headers },
     });
   }

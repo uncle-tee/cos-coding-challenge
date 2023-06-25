@@ -5,7 +5,7 @@ import nock from 'nock';
 import { CarOnSaleClient } from './CarOnSaleClient';
 import { ILogger } from '../../Logger/interface/ILogger';
 import { Logger } from '../../Logger/classes/Logger';
-import { ICarOnSaleAuction } from '../interface/ICarOnSaleAuction';
+import { ICarOnSaleRunningActionResponse } from '../interface/ICarOnSaleAuction';
 import {
   CarOnSaleException,
   ErrorMessage,
@@ -15,9 +15,21 @@ import config from 'config';
 describe('CarOnSaleClient', () => {
   let mockLogger: sinon.SinonStubbedInstance<ILogger>;
   let carOnSaleClient: CarOnSaleClient;
+  let nockInstance;
 
   beforeEach(() => {
     mockLogger = sinon.createStubInstance<ILogger>(Logger);
+    nockInstance = nock('https://api-core-dev.caronsale.de/api', {
+      reqheaders: {
+        authtoken: 'mocked-token',
+        userid: 'mocked-user-id',
+        'User-Agent': 'proxy',
+      },
+    })
+      .get('/v2/auction/buyer/')
+      .query({
+        filter: JSON.stringify({ limit: 5000, offset: 0 }),
+      });
     carOnSaleClient = new CarOnSaleClient(mockLogger);
   });
 
@@ -27,25 +39,19 @@ describe('CarOnSaleClient', () => {
 
   describe('getRunningAuctions', () => {
     it('should return running auctions when authentication is successful', async () => {
-      const auctions: ICarOnSaleAuction[] = [
-        {
-          currentHighestBidValue: 0,
-          id: 0,
-          label: '',
-          minimumRequiredAsk: 0,
-          numBids: 0,
-        },
-      ];
+      const auctions: ICarOnSaleRunningActionResponse = {
+        page: 1,
+        total: 2000,
+        items: [
+          {
+            currentHighestBidValue: 0,
+            minimumRequiredAsk: 0,
+            numBids: 0,
+          },
+        ],
+      };
 
-      nock('https://api-core-dev.caronsale.de/api', {
-        reqheaders: {
-          authtoken: 'mocked-token',
-          userid: 'mocked-user-id',
-          'User-Agent': 'proxy',
-        },
-      })
-        .get('/v2/auction/buyer')
-        .reply(200, auctions);
+      nockInstance.reply(200, auctions);
 
       carOnSaleClient['authCredentials'] = {
         token: 'mocked-token',
@@ -54,20 +60,12 @@ describe('CarOnSaleClient', () => {
 
       const result = await carOnSaleClient.getRunningAuctions();
 
-      expect(result).to.deep.equal(auctions);
+      expect(result).to.deep.equal(auctions.items);
       expect(mockLogger.error.notCalled).to.be.true;
     });
 
     it('should throw an error when the requests to get auctions fails', async () => {
-      nock('https://api-core-dev.caronsale.de/api', {
-        reqheaders: {
-          authtoken: 'mocked-token',
-          userid: 'mocked-user-id',
-          'User-Agent': 'proxy',
-        },
-      })
-        .get('/v2/auction/buyer')
-        .reply(401, { status: 401, message: 'Request Failed' });
+      nockInstance.reply(401, { status: 401, message: 'Request Failed' });
 
       carOnSaleClient['authCredentials'] = {
         token: 'mocked-token',
@@ -133,7 +131,7 @@ describe('CarOnSaleClient', () => {
 
       nock('https://api-core-dev.caronsale.de/api')
         .put(`/v1/authentication/${email}`, { password })
-        .reply(401, {message: "auth_failed"});
+        .reply(401, { message: 'auth_failed' });
 
       const configGetStub = stub(config, 'get');
       configGetStub.withArgs('api.carOnSale').returns({ email, password });
@@ -144,10 +142,12 @@ describe('CarOnSaleClient', () => {
         await carOnSaleClient['authenticate']();
         expect.fail('Expected CarOnSaleException to be thrown.');
       } catch (error) {
-        expect(mockLogger.error.calledOnceWith('Failed to authenticate', {
-          statusCode:401,
-          message: 'auth_failed',
-        })).to.be.true;
+        expect(
+          mockLogger.error.calledOnceWith('Failed to authenticate', {
+            statusCode: 401,
+            message: 'auth_failed',
+          }),
+        ).to.be.true;
         expect(error).to.be.an.instanceOf(CarOnSaleException);
         expect(error.message).to.equal(ErrorMessage.AUTHENTICATION);
       }
@@ -156,7 +156,10 @@ describe('CarOnSaleClient', () => {
     });
 
     it('should not authenticate when credentials are already present', async () => {
-      carOnSaleClient['authCredentials'] = { token: 'mocked-token', userId: 'mocked-user-id' };
+      carOnSaleClient['authCredentials'] = {
+        token: 'mocked-token',
+        userId: 'mocked-user-id',
+      };
 
       await carOnSaleClient['authenticate']();
 

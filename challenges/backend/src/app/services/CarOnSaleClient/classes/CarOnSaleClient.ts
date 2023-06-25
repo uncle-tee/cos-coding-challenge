@@ -1,5 +1,8 @@
 import 'reflect-metadata';
-import { ICarOnSaleAuction } from '../interface/ICarOnSaleAuction';
+import {
+  ICarOnSaleAuction,
+  ICarOnSaleRunningActionResponse,
+} from '../interface/ICarOnSaleAuction';
 import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
 import { ILogger } from '../../Logger/interface/ILogger';
@@ -22,11 +25,30 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
 
   async getRunningAuctions(): Promise<ICarOnSaleAuction[]> {
     await this.authenticate();
+    const auctions: ICarOnSaleAuction[] = [];
+    let offset = 0;
+    const limit = 5000;
+    let hasMoreData = true;
     try {
-      return await this.get('/v2/auction/buyer', {
-        authtoken: this.authCredentials.token,
-        userid: this.authCredentials.userId,
-      });
+      while (hasMoreData) {
+        const queryParams = {
+          filter: JSON.stringify({ limit, offset }),
+        };
+        const auctionItems: ICarOnSaleRunningActionResponse = await this.get(
+          '/v2/auction/buyer/',
+          queryParams,
+          {
+            authtoken: this.authCredentials.token,
+            userid: this.authCredentials.userId,
+          },
+        );
+        auctions.push(...auctionItems.items);
+        offset += limit;
+        if (auctionItems.items.length < limit) {
+          hasMoreData = false;
+        }
+      }
+      return auctions;
     } catch (e) {
       if (e instanceof HttpClientException) {
         this.logger.error(`Fetching Auction Failed`, {
