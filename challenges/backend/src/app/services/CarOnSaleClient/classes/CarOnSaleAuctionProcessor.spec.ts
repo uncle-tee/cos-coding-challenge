@@ -35,17 +35,18 @@ describe('CarOnSaleAuctionProcessor', () => {
 
   describe('processor', () => {
     it('should return the correct auction processor result', async () => {
-      const expectedAverageNumberOfBids = 10;
       const expectedAveragePercentageOfAuctionProgress = 6;
-      const expectedNumberOfAuctions = 5;
 
       const mockAuctions: ICarOnSaleAuction[] = [
         {
-          currentHighestBidValue: 0,
-          id: 0,
-          label: '',
-          minimumRequiredAsk: 0,
-          numBids: 0,
+          currentHighestBidValue: 10,
+          minimumRequiredAsk: 15,
+          numBids: 10,
+        },
+        {
+          currentHighestBidValue: 36,
+          minimumRequiredAsk: 35,
+          numBids: 15,
         },
       ];
 
@@ -53,11 +54,9 @@ describe('CarOnSaleAuctionProcessor', () => {
 
       const result = await auctionProcessor.processor();
 
-      expect(result.averageNumberOfBids).to.equal(expectedAverageNumberOfBids);
-      expect(result.averagePercentageOfAuctionProgress).to.equal(
-        expectedAveragePercentageOfAuctionProgress,
-      );
-      expect(result.numberOfAuctions).to.equal(expectedNumberOfAuctions);
+      expect(result.averageNumberOfBids).to.equal(12.5);
+      expect(result.averagePercentageOfAuctionProgress).to.equal(84.76);
+      expect(result.numberOfAuctions).to.equal(2);
       sinon.assert.calledOnce(mockCarOnSaleClient.getRunningAuctions);
     });
 

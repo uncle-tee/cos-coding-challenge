@@ -27,7 +27,7 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
           CarOnSaleAuctionProcessor.calculateAveragePercentageOdAuctionProgress(
             availableAuctions,
           ),
-        numberOfAuctions: 5,
+        numberOfAuctions: availableAuctions.length,
       };
     } catch (e) {
       this.logger.error(e.message);
@@ -38,12 +38,27 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
   private static calculateAverageNumberOfBids(
     carOnSaltAuctions: ICarOnSaleAuction[],
   ): number {
-    return 10;
+    return +carOnSaltAuctions
+      .filter(auction => auction.numBids)
+      .reduce(
+        (previous, currentValue) =>
+          previous + (+currentValue.numBids / carOnSaltAuctions.length),
+        0,
+      )
+      .toFixed(2);
   }
 
   private static calculateAveragePercentageOdAuctionProgress(
     carOnSaltAuctions: ICarOnSaleAuction[],
   ): number {
-    return 6;
+    return +carOnSaltAuctions
+      .filter(
+        auction => auction.currentHighestBidValue && auction.minimumRequiredAsk,
+      )
+      .reduce((previousValue, currentValue) => {
+        const { currentHighestBidValue, minimumRequiredAsk } = currentValue;
+        let percentageAuctionProgress = (currentHighestBidValue / minimumRequiredAsk) * 100;
+        return previousValue + (+percentageAuctionProgress / carOnSaltAuctions.length);
+      }, 0).toFixed(2);
   }
 }
