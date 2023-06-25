@@ -15,7 +15,7 @@ export class AuctionMonitorApp {
   ) {}
 
   public async start(): Promise<void> {
-    this.logger.log(`Auction Monitor started.`);
+    this.logger.log(`Starting Auction Monitor`);
 
     try {
       let auctionCalculatorResult =
@@ -27,14 +27,15 @@ export class AuctionMonitorApp {
         `AVERAGE NUMBER OF BIDS ${auctionCalculatorResult.averageNumberOfBids}`,
       );
       this.logger.log(
-        `average percentage of the auction progress ${auctionCalculatorResult.averagePercentageOfAuctionProgress}`,
+        `AVERAGE PERCENTAGE OF THE AUCTION PROGRESS ${auctionCalculatorResult.averagePercentageOfAuctionProgress}`,
       );
+
+      this.logger.log('Auction Monitor Ended');
+
       Process.exit(0);
     } catch (e) {
       this.logger.error('Failed to process auctions');
       Process.exit(-1);
     }
-
-    // TODO: Retrieve auctions and display aggregated information (see README.md)
   }
 }
