@@ -11,9 +11,7 @@ export class Logger implements ILogger {
 
   error(message: string, data?: object): void {
     if (data) {
-      console.log(
-        `[LOG]: ${message} ==>  payload Data ${JSON.stringify(data)}`,
-      );
+      console.log(`[LOG]: ${message} ==>  payload Data ${JSON.stringify(data)}`);
     } else {
       console.log(`[LOG]: ${message}`);
     }

@@ -16,8 +16,7 @@ describe('CarOnSaleAuctionProcessor', () => {
   let mockAuctions: ICarOnSaleAuction[];
 
   beforeEach(() => {
-    mockCarOnSaleClient =
-      sinon.createStubInstance<ICarOnSaleClient>(CarOnSaleClient);
+    mockCarOnSaleClient = sinon.createStubInstance<ICarOnSaleClient>(CarOnSaleClient);
     mockLogger = sinon.createStubInstance<ILogger>(Logger);
     mockAuctions = [
       {
@@ -30,7 +29,7 @@ describe('CarOnSaleAuctionProcessor', () => {
         minimumRequiredAsk: 35,
         numBids: 15,
       },
-    ]
+    ];
     auctionProcessor = new CarOnSaleAuctionProcessor(
       mockCarOnSaleClient as unknown as ICarOnSaleClient,
       mockLogger as unknown as ILogger,
@@ -64,9 +63,7 @@ describe('CarOnSaleAuctionProcessor', () => {
           await auctionProcessor.summarizeAuctions();
         } catch (e) {
           sinon.assert.calledOnce(mockLogger.error);
-          expect(
-            mockLogger.error.calledOnceWith(ErrorMessage.AUTHENTICATION),
-          ).to.equal(true);
+          expect(mockLogger.error.calledOnceWith(ErrorMessage.AUTHENTICATION)).to.equal(true);
           expect(e).to.to.an.instanceof(CarOnSaleException);
         }
       });
@@ -74,18 +71,14 @@ describe('CarOnSaleAuctionProcessor', () => {
 
     describe('calculateAverageNumberOfBids', () => {
       it('calculates the average number of bids correctly', () => {
-        const result =
-          auctionProcessor.calculateAverageNumberOfBids(mockAuctions);
+        const result = auctionProcessor.calculateAverageNumberOfBids(mockAuctions);
         expect(result).to.equal(12.5);
       });
     });
 
     describe('calculateAveragePercentageOfAuctionProgress', () => {
       it('calculates the average percentage of auction progress correctly', () => {
-        const result =
-          auctionProcessor.calculateAveragePercentageOfAuctionProgress(
-            mockAuctions,
-          );
+        const result = auctionProcessor.calculateAveragePercentageOfAuctionProgress(mockAuctions);
         expect(result).to.equal(84.76);
       });
     });

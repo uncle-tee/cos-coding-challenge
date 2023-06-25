@@ -30,7 +30,6 @@ describe('CarOnSaleClient', () => {
       token: 'mocked-token',
       userId: 'mocked-user-id',
     };
-
   });
 
   afterEach(() => {
@@ -56,10 +55,8 @@ describe('CarOnSaleClient', () => {
       fetchAuctionsStub.resolves(auctions);
       const authenticationStub = sinon.stub();
 
-
       carOnSaleClient.fetchAuctions = fetchAuctionsStub;
       carOnSaleClient['authenticate'] = authenticationStub;
-
 
       const result = await carOnSaleClient.getRunningAuctions();
 
@@ -101,7 +98,7 @@ describe('CarOnSaleClient', () => {
 
       const result = await carOnSaleClient.getRunningAuctions();
 
-      expect(result).to.deep.equal([...firstAuctionCallResult.items, ...secondAuctionResult.items])
+      expect(result).to.deep.equal([...firstAuctionCallResult.items, ...secondAuctionResult.items]);
       expect(fetchAuctionsStub.callCount).to.equal(2);
       expect(fetchAuctionsStub.firstCall.calledWithExactly({ limit: 4000, offset: 0 }));
       expect(fetchAuctionsStub.secondCall.calledWithExactly({ limit: 4000, offset: 1 }));
@@ -110,10 +107,12 @@ describe('CarOnSaleClient', () => {
 
     it('should throw an error when the requests to get auctions fails', async () => {
       const fetchAuctionsStub = sinon.stub();
-      fetchAuctionsStub.throws(new HttpClientException(401, {
-        statusCode: 401,
-        message: 'Request Failed',
-      }));
+      fetchAuctionsStub.throws(
+        new HttpClientException(401, {
+          statusCode: 401,
+          message: 'Request Failed',
+        }),
+      );
       carOnSaleClient.fetchAuctions = fetchAuctionsStub;
 
       try {
@@ -244,12 +243,12 @@ describe('CarOnSaleClient', () => {
     });
 
     it('should throw an error when the requests to get auctions fails', async () => {
-
       nockInstance
         .get('/v2/auction/buyer/')
         .query({
           filter: JSON.stringify({ limit: 4000, offset: 0 }),
-        }).reply(401, { status: 401, message: 'Request Failed' });
+        })
+        .reply(401, { status: 401, message: 'Request Failed' });
 
       carOnSaleClient['authCredentials'] = {
         token: 'mocked-token',

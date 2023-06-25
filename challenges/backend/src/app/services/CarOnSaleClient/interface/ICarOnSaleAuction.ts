@@ -12,5 +12,3 @@ export interface ICarOnSaleRunningAuctionResponse {
   page: number;
   total: number;
 }
-
-

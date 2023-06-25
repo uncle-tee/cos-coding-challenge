@@ -1,7 +1,7 @@
 /**
- * This service describes an interface to access auction data from the CarOnSale API.
+ * This contract interface to access auction data from the CarOnSale API.
  */
-import { ICarOnSaleAuction, ICarOnSaleRunningAuctionResponse, ICarOnSaleRunningAuctions } from './ICarOnSaleAuction';
+import { ICarOnSaleAuction } from './ICarOnSaleAuction';
 
 export interface ICarOnSaleClient {
   /**

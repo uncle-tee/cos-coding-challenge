@@ -1,8 +1,5 @@
 import 'reflect-metadata';
-import {
-  ICarOnSaleAuction,
-  ICarOnSaleRunningAuctionResponse,
-} from '../interface/ICarOnSaleAuction';
+import { ICarOnSaleAuction, ICarOnSaleRunningAuctionResponse } from '../interface/ICarOnSaleAuction';
 import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
 import { ILogger } from '../../Logger/interface/ILogger';
@@ -31,8 +28,7 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
     await this.authenticate();
     try {
       while (hasMoreData) {
-        const auctionItems =
-          await this.fetchAuctions({ limit, offset: auctions.length });
+        const auctionItems = await this.fetchAuctions({ limit, offset: auctions.length });
         auctions.push(...auctionItems.items);
         total = auctionItems.total;
         hasMoreData = auctions.length < auctionItems.total;
@@ -50,7 +46,7 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
     }
   }
 
-  async fetchAuctions({ limit, offset }: { limit: number, offset: number }): Promise<ICarOnSaleRunningAuctionResponse> {
+  async fetchAuctions({ limit, offset }: { limit: number; offset: number }): Promise<ICarOnSaleRunningAuctionResponse> {
     const queryParams = {
       filter: JSON.stringify({ limit, offset }),
     };
@@ -66,9 +62,7 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
    * @private
    */
   private async authenticate() {
-    const { email, password } = config.get<{ email: string; password: string }>(
-      'api.carOnSale',
-    );
+    const { email, password } = config.get<{ email: string; password: string }>('api.carOnSale');
     try {
       if (!this.authCredentials) {
         this.authCredentials = await this.put(`/v1/authentication/${email}`, {

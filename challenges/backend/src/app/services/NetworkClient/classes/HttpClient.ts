@@ -12,11 +12,7 @@ export abstract class HttpClient {
     this._initializeResponseInterceptor();
   }
 
-  get<R>(
-    path: string,
-    params: { [key: string]: string },
-    headers?: { [key: string]: string },
-  ): Promise<R> {
+  get<R>(path: string, params: { [key: string]: string }, headers?: { [key: string]: string }): Promise<R> {
     return this.axiosInstance.get(path, {
       params,
       headers: {
@@ -32,10 +28,7 @@ export abstract class HttpClient {
   }
 
   private _initializeResponseInterceptor = () => {
-    this.axiosInstance.interceptors.response.use(
-      this._handleResponse,
-      this._handleError,
-    );
+    this.axiosInstance.interceptors.response.use(this._handleResponse, this._handleError);
   };
 
   private _handleResponse = ({ data }: AxiosResponse) => data;

@@ -18,14 +18,9 @@ export class AuctionMonitorApp {
     this.logger.log(`Starting Auction Monitor`);
 
     try {
-      let auctionCalculatorResult =
-        await this.auctionCalculatorService.summarizeAuctions();
-      this.logger.log(
-        `ACTIONS TOTAL BIDS RESULT ${auctionCalculatorResult.numberOfAuctions}`,
-      );
-      this.logger.log(
-        `AVERAGE NUMBER OF BIDS ${auctionCalculatorResult.averageNumberOfBids}`,
-      );
+      let auctionCalculatorResult = await this.auctionCalculatorService.summarizeAuctions();
+      this.logger.log(`ACTIONS TOTAL BIDS RESULT ${auctionCalculatorResult.numberOfAuctions}`);
+      this.logger.log(`AVERAGE NUMBER OF BIDS ${auctionCalculatorResult.averageNumberOfBids}`);
       this.logger.log(
         `AVERAGE PERCENTAGE OF THE AUCTION PROGRESS ${auctionCalculatorResult.averagePercentageOfAuctionProgress}`,
       );

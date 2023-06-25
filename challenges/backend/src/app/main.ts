@@ -21,12 +21,8 @@ const container = new Container({
  * Register dependencies in DI environment.
  */
 container.bind<ILogger>(DependencyIdentifier.LOGGER).to(Logger);
-container
-  .bind<ICarOnSaleClient>(DependencyIdentifier.CAR_ON_SALE_CLIENT)
-  .to(CarOnSaleClient);
-container
-  .bind<ICarOnSaleAuctionProcessor>(DependencyIdentifier.AUCTION_SERVICE)
-  .to(CarOnSaleAuctionProcessor);
+container.bind<ICarOnSaleClient>(DependencyIdentifier.CAR_ON_SALE_CLIENT).to(CarOnSaleClient);
+container.bind<ICarOnSaleAuctionProcessor>(DependencyIdentifier.AUCTION_SERVICE).to(CarOnSaleAuctionProcessor);
 
 /*
  * Inject all dependencies in the application & retrieve application instance.

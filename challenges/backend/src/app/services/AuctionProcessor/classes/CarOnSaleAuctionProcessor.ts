@@ -20,10 +20,8 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
     try {
       const runningAuctions = await this.carOnSaleClient.getRunningAuctions();
       return {
-        averageNumberOfBids:
-          this.calculateAverageNumberOfBids(runningAuctions),
-        averagePercentageOfAuctionProgress:
-          this.calculateAveragePercentageOfAuctionProgress(runningAuctions),
+        averageNumberOfBids: this.calculateAverageNumberOfBids(runningAuctions),
+        averagePercentageOfAuctionProgress: this.calculateAveragePercentageOfAuctionProgress(runningAuctions),
         numberOfAuctions: runningAuctions.length,
       };
     } catch (e) {
@@ -39,13 +37,10 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
    * and xᵢ represents each individual value of the numberOfBids for each auction
    * @param auctions
    */
-  public calculateAverageNumberOfBids(
-    auctions: ICarOnSaleAuction[],
-  ): number {
-    const auctionBidsCount: number[] = auctions.map(auction => (auction.numBids || 0));
+  public calculateAverageNumberOfBids(auctions: ICarOnSaleAuction[]): number {
+    const auctionBidsCount: number[] = auctions.map(auction => auction.numBids || 0);
     return MathUtil.findAverage(auctionBidsCount);
   }
-
 
   /**
    * This method calculates the average percentage of auctions in progress
@@ -54,19 +49,14 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
    * where xj is the minimumRequiredAsk for each auction
    * @param auctions
    */
-  public calculateAveragePercentageOfAuctionProgress(
-    auctions: ICarOnSaleAuction[],
-  ): number {
+  public calculateAveragePercentageOfAuctionProgress(auctions: ICarOnSaleAuction[]): number {
     const sumOfAuctionProgress: number[] = auctions
-      .filter(
-        auction => auction.currentHighestBidValue && auction.minimumRequiredAsk,
-      )
-      .map((auction) => {
+      .filter(auction => auction.currentHighestBidValue && auction.minimumRequiredAsk)
+      .map(auction => {
         const { currentHighestBidValue, minimumRequiredAsk } = auction;
-        return (currentHighestBidValue / minimumRequiredAsk);
+        return currentHighestBidValue / minimumRequiredAsk;
       });
 
     return +(100 * MathUtil.findAverage(sumOfAuctionProgress)).toFixed(2);
-
   }
 }
