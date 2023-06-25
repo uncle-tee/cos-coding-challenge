@@ -13,11 +13,24 @@ describe('CarOnSaleAuctionProcessor', () => {
   let auctionProcessor: CarOnSaleAuctionProcessor;
   let mockCarOnSaleClient: sinon.SinonStubbedInstance<ICarOnSaleClient>;
   let mockLogger: sinon.SinonStubbedInstance<ILogger>;
+  let mockAuctions;
 
   beforeEach(() => {
     mockCarOnSaleClient =
       sinon.createStubInstance<ICarOnSaleClient>(CarOnSaleClient);
     mockLogger = sinon.createStubInstance<ILogger>(Logger);
+    mockAuctions = [
+      {
+        currentHighestBidValue: 10,
+        minimumRequiredAsk: 15,
+        numBids: 10,
+      },
+      {
+        currentHighestBidValue: 36,
+        minimumRequiredAsk: 35,
+        numBids: 15,
+      },
+    ];
     auctionProcessor = new CarOnSaleAuctionProcessor(
       mockCarOnSaleClient as unknown as ICarOnSaleClient,
       mockLogger as unknown as ILogger,
@@ -33,18 +46,6 @@ describe('CarOnSaleAuctionProcessor', () => {
   describe('CarOnSaleAuctionProcessor', () => {
     describe('summarizeAuctions', () => {
       it('should return the correct auction processor result', async () => {
-        const mockAuctions: ICarOnSaleAuction[] = [
-          {
-            currentHighestBidValue: 10,
-            minimumRequiredAsk: 15,
-            numBids: 10,
-          },
-          {
-            currentHighestBidValue: 36,
-            minimumRequiredAsk: 35,
-            numBids: 15,
-          },
-        ];
 
         mockCarOnSaleClient.getRunningAuctions.resolves(mockAuctions);
 
@@ -74,38 +75,13 @@ describe('CarOnSaleAuctionProcessor', () => {
 
     describe('calculateAverageNumberOfBids', () => {
       it('calculates the average number of bids correctly', () => {
-        const carOnSaltAuctions: ICarOnSaleAuction[] = [
-          {
-            currentHighestBidValue: 10,
-            minimumRequiredAsk: 15,
-            numBids: 10,
-          },
-          {
-            currentHighestBidValue: 36,
-            minimumRequiredAsk: 35,
-            numBids: 15,
-          },
-        ];
-
-        const result = auctionProcessor.calculateAverageNumberOfBids(carOnSaltAuctions);
+        const result = auctionProcessor.calculateAverageNumberOfBids(mockAuctions);
         expect(result).to.equal(12.50);
       });
     });
 
     describe('calculateAveragePercentageOdAuctionProgress', () => {
       it('calculates the average percentage of auction progress correctly', () => {
-        const carOnSaltAuctions: ICarOnSaleAuction[] = [
-          {
-            currentHighestBidValue: 10,
-            minimumRequiredAsk: 15,
-            numBids: 10,
-          },
-          {
-            currentHighestBidValue: 36,
-            minimumRequiredAsk: 35,
-            numBids: 15,
-          },
-        ];
 
         const result = auctionProcessor.calculateAveragePercentageOdAuctionProgress(carOnSaltAuctions);
         expect(result).to.equal(84.76);
