@@ -1,4 +1,4 @@
-import { ICarOnSaleAuctionProcessorResult } from './ICarOnSaleAuctionProcessorResult';
+import { ICarOnSaleAuctionProcessorResult } from '../../CarOnSaleClient/interface/ICarOnSaleAuctionProcessorResult';
 
 /**
  * This is used to process auctions.

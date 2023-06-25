@@ -6,8 +6,8 @@ import { Logger } from './services/Logger/classes/Logger';
 import { ILogger } from './services/Logger/interface/ILogger';
 import { CarOnSaleClient } from './services/CarOnSaleClient/classes/CarOnSaleClient';
 import { ICarOnSaleClient } from './services/CarOnSaleClient/interface/ICarOnSaleClient';
-import { CarOnSaleAuctionProcessor } from './services/CarOnSaleClient/classes/CarOnSaleAuctionProcessor';
-import { ICarOnSaleAuctionProcessor } from './services/CarOnSaleClient/interface/ICarOnSaleAuctionProcessor';
+import { CarOnSaleAuctionProcessor } from './services/AuctionProcessor/classes/CarOnSaleAuctionProcessor';
+import { ICarOnSaleAuctionProcessor } from './services/AuctionProcessor/interface/ICarOnSaleAuctionProcessor';
 
 /*
  * Create the DI container.

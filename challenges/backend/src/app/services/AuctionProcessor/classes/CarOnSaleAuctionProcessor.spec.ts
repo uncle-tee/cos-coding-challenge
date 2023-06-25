@@ -1,16 +1,16 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { CarOnSaleAuctionProcessor } from './CarOnSaleAuctionProcessor';
-import { ICarOnSaleClient } from '../interface/ICarOnSaleClient';
+import { ICarOnSaleClient } from '../../CarOnSaleClient/interface/ICarOnSaleClient';
 import { ILogger } from '../../Logger/interface/ILogger';
-import { CarOnSaleClient } from './CarOnSaleClient';
+import { CarOnSaleClient } from '../../CarOnSaleClient/classes/CarOnSaleClient';
 import { Logger } from '../../Logger/classes/Logger';
 import {
   CarOnSaleException,
   ErrorMessage,
-} from '../exeptions/CarOnSaleException';
+} from '../../CarOnSaleClient/exeptions/CarOnSaleException';
 import { afterEach } from 'mocha';
-import { ICarOnSaleAuction } from '../interface/ICarOnSaleAuction';
+import { ICarOnSaleAuction } from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
 
 describe('CarOnSaleAuctionProcessor', () => {
   let auctionProcessor: CarOnSaleAuctionProcessor;

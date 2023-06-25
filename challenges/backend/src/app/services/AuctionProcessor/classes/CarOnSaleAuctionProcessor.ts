@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import { ICarOnSaleAuctionProcessorResult } from '../interface/ICarOnSaleAuctionProcessorResult';
+import { ICarOnSaleAuctionProcessorResult } from '../../CarOnSaleClient/interface/ICarOnSaleAuctionProcessorResult';
 import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
-import { ICarOnSaleClient } from '../interface/ICarOnSaleClient';
+import { ICarOnSaleClient } from '../../CarOnSaleClient/interface/ICarOnSaleClient';
 import { ICarOnSaleAuctionProcessor } from '../interface/ICarOnSaleAuctionProcessor';
-import { ICarOnSaleAuction } from '../interface/ICarOnSaleAuction';
+import { ICarOnSaleAuction } from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
 import { ILogger } from '../../Logger/interface/ILogger';
 
 @injectable()

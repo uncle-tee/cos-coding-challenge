@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from './DependencyIdentifiers';
 import { ILogger } from './services/Logger/interface/ILogger';
 import 'reflect-metadata';
-import { ICarOnSaleAuctionProcessor } from './services/CarOnSaleClient/interface/ICarOnSaleAuctionProcessor';
+import { ICarOnSaleAuctionProcessor } from './services/AuctionProcessor/interface/ICarOnSaleAuctionProcessor';
 import * as Process from 'process';
 
 @injectable()
