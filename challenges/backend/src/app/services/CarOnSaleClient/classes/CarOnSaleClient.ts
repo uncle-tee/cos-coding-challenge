@@ -1,5 +1,9 @@
 import 'reflect-metadata';
-import { ICarOnSaleAuction, ICarOnSaleRunningActionResponse } from '../interface/ICarOnSaleAuction';
+import {
+  ICarOnSaleAuction,
+  ICarOnSaleRunningAuctionResponse,
+  ICarOnSaleRunningAuctions,
+} from '../interface/ICarOnSaleAuction';
 import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
 import { ILogger } from '../../Logger/interface/ILogger';
@@ -17,22 +21,24 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
     super(config.get('api.carOnSale.url'));
   }
 
-  async getRunningAuctions(): Promise<ICarOnSaleAuction[]> {
-    await this.authenticate();
+  /**
+   *
+   */
+  async getRunningAuctions(): Promise<ICarOnSaleRunningAuctions> {
     const auctions: ICarOnSaleAuction[] = [];
-    let offset = 0;
-    const limit: number = config.get<number>('api.carOnSale.limit');
+    let total = 0;
+    const limit: number = +config.get<number>('api.carOnSale.limit');
     let hasMoreData = true;
+    await this.authenticate();
     try {
       while (hasMoreData) {
-        const auctionItems: ICarOnSaleRunningActionResponse = await this.fetchPage({limit, offset});
+        const auctionItems =
+          await this.fetchAuctions({ limit, offset: auctions.length });
         auctions.push(...auctionItems.items);
-        offset += limit;
-        if (auctionItems.items.length < limit) {
-          hasMoreData = false;
-        }
+        total = auctionItems.total;
+        hasMoreData = auctions.length < auctionItems.total;
       }
-      return auctions;
+      return { items: auctions, total };
     } catch (e) {
       if (e instanceof HttpClientException) {
         this.logger.error(`Fetching Auction Failed`, {
@@ -45,18 +51,14 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
     }
   }
 
-  fetchPage({ limit, offset }:{ limit: number, offset: number }): Promise<ICarOnSaleRunningActionResponse>{
+  async fetchAuctions({ limit, offset }: { limit: number, offset: number }): Promise<ICarOnSaleRunningAuctionResponse> {
     const queryParams = {
       filter: JSON.stringify({ limit, offset }),
     };
-    return this.get(
-      '/v2/auction/buyer/',
-      queryParams,
-      {
-        authtoken: this.authCredentials.token,
-        userid: this.authCredentials.userId,
-      },
-    );
+    return this.get('/v2/auction/buyer/', queryParams, {
+      authtoken: this.authCredentials.token,
+      userid: this.authCredentials.userId,
+    });
   }
 
   /**

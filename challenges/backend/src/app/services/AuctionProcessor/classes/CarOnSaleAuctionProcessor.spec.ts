@@ -7,30 +7,33 @@ import { CarOnSaleClient } from '../../CarOnSaleClient/classes/CarOnSaleClient';
 import { Logger } from '../../Logger/classes/Logger';
 import { CarOnSaleException, ErrorMessage } from '../../CarOnSaleClient/exeptions/CarOnSaleException';
 import { afterEach } from 'mocha';
-import { ICarOnSaleAuction } from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
+import { ICarOnSaleRunningAuctions } from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
 
 describe('CarOnSaleAuctionProcessor', () => {
   let auctionProcessor: CarOnSaleAuctionProcessor;
   let mockCarOnSaleClient: sinon.SinonStubbedInstance<ICarOnSaleClient>;
   let mockLogger: sinon.SinonStubbedInstance<ILogger>;
-  let mockAuctions;
+  let mockAuctions: ICarOnSaleRunningAuctions;
 
   beforeEach(() => {
     mockCarOnSaleClient =
       sinon.createStubInstance<ICarOnSaleClient>(CarOnSaleClient);
     mockLogger = sinon.createStubInstance<ILogger>(Logger);
-    mockAuctions = [
-      {
-        currentHighestBidValue: 10,
-        minimumRequiredAsk: 15,
-        numBids: 10,
-      },
-      {
-        currentHighestBidValue: 36,
-        minimumRequiredAsk: 35,
-        numBids: 15,
-      },
-    ];
+    mockAuctions = {
+      total: 2,
+      items: [
+        {
+          currentHighestBidValue: 10,
+          minimumRequiredAsk: 15,
+          numBids: 10,
+        },
+        {
+          currentHighestBidValue: 36,
+          minimumRequiredAsk: 35,
+          numBids: 15,
+        },
+      ],
+    };
     auctionProcessor = new CarOnSaleAuctionProcessor(
       mockCarOnSaleClient as unknown as ICarOnSaleClient,
       mockLogger as unknown as ILogger,
@@ -46,7 +49,6 @@ describe('CarOnSaleAuctionProcessor', () => {
   describe('CarOnSaleAuctionProcessor', () => {
     describe('summarizeAuctions', () => {
       it('should return the correct auction processor result', async () => {
-
         mockCarOnSaleClient.getRunningAuctions.resolves(mockAuctions);
 
         const result = await auctionProcessor.summarizeAuctions();
@@ -75,19 +77,20 @@ describe('CarOnSaleAuctionProcessor', () => {
 
     describe('calculateAverageNumberOfBids', () => {
       it('calculates the average number of bids correctly', () => {
-        const result = auctionProcessor.calculateAverageNumberOfBids(mockAuctions);
-        expect(result).to.equal(12.50);
+        const result =
+          auctionProcessor.calculateAverageNumberOfBids(mockAuctions);
+        expect(result).to.equal(12.5);
       });
     });
 
-    describe('calculateAveragePercentageOdAuctionProgress', () => {
+    describe('calculateAveragePercentageOfAuctionProgress', () => {
       it('calculates the average percentage of auction progress correctly', () => {
-
-        const result = auctionProcessor.calculateAveragePercentageOdAuctionProgress(carOnSaltAuctions);
+        const result =
+          auctionProcessor.calculateAveragePercentageOfAuctionProgress(
+            mockAuctions,
+          );
         expect(result).to.equal(84.76);
       });
-
     });
-
   });
 });

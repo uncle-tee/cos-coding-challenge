@@ -7,8 +7,14 @@ export interface ICarOnSaleAuction {
   numBids: number;
 }
 
-export interface ICarOnSaleRunningActionResponse {
+export interface ICarOnSaleRunningAuctionResponse {
   items: ICarOnSaleAuction[];
   page: number;
   total: number;
 }
+
+export interface ICarOnSaleRunningAuctions extends Omit<ICarOnSaleRunningAuctionResponse, 'page'> {
+
+}
+
+

@@ -1,7 +1,7 @@
 /**
  * This service describes an interface to access auction data from the CarOnSale API.
  */
-import { ICarOnSaleAuction } from './ICarOnSaleAuction';
+import { ICarOnSaleAuction, ICarOnSaleRunningAuctionResponse, ICarOnSaleRunningAuctions } from './ICarOnSaleAuction';
 
 export interface ICarOnSaleClient {
   /**
@@ -9,5 +9,5 @@ export interface ICarOnSaleClient {
    *
    * @return Promise<ICarOnSaleAuction[]>
    */
-  getRunningAuctions(): Promise<ICarOnSaleAuction[]>;
+  getRunningAuctions(): Promise<ICarOnSaleRunningAuctions>;
 }

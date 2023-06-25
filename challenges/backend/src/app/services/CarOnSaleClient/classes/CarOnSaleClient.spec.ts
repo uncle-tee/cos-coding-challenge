@@ -5,12 +5,10 @@ import nock from 'nock';
 import { CarOnSaleClient } from './CarOnSaleClient';
 import { ILogger } from '../../Logger/interface/ILogger';
 import { Logger } from '../../Logger/classes/Logger';
-import { ICarOnSaleRunningActionResponse } from '../interface/ICarOnSaleAuction';
-import {
-  CarOnSaleException,
-  ErrorMessage,
-} from '../exeptions/CarOnSaleException';
+import { ICarOnSaleRunningAuctionResponse } from '../interface/ICarOnSaleAuction';
+import { CarOnSaleException, ErrorMessage } from '../exeptions/CarOnSaleException';
 import config from 'config';
+import { HttpClientException } from '../../NetworkClient/exceptions/HttpClientException';
 
 describe('CarOnSaleClient', () => {
   let mockLogger: sinon.SinonStubbedInstance<ILogger>;
@@ -25,52 +23,101 @@ describe('CarOnSaleClient', () => {
         userid: 'mocked-user-id',
         'User-Agent': 'proxy',
       },
-    })
-      .get('/v2/auction/buyer/')
-      .query({
-        filter: JSON.stringify({ limit: 4000, offset: 0 }),
-      });
+    });
     carOnSaleClient = new CarOnSaleClient(mockLogger);
+
+    carOnSaleClient['authCredentials'] = {
+      token: 'mocked-token',
+      userId: 'mocked-user-id',
+    };
+
   });
 
   afterEach(() => {
     nock.cleanAll();
+    sinon.reset();
   });
 
   describe('getRunningAuctions', () => {
     it('should return running auctions when authentication is successful', async () => {
-      const auctions: ICarOnSaleRunningActionResponse = {
+      const auctions: ICarOnSaleRunningAuctionResponse = {
         page: 1,
-        total: 2000,
+        total: 1,
         items: [
           {
-            currentHighestBidValue: 0,
-            minimumRequiredAsk: 0,
-            numBids: 0,
+            currentHighestBidValue: 7,
+            minimumRequiredAsk: 6,
+            numBids: 6,
           },
         ],
       };
 
-      nockInstance.reply(200, auctions);
+      const fetchAuctionsStub = sinon.stub();
+      fetchAuctionsStub.resolves(auctions);
+      const authenticationStub = sinon.stub();
 
-      carOnSaleClient['authCredentials'] = {
-        token: 'mocked-token',
-        userId: 'mocked-user-id',
-      };
+
+      carOnSaleClient.fetchAuctions = fetchAuctionsStub;
+      carOnSaleClient['authenticate'] = authenticationStub;
+
 
       const result = await carOnSaleClient.getRunningAuctions();
 
-      expect(result).to.deep.equal(auctions.items);
+      expect(result).to.deep.equal({ items: auctions.items, total: auctions.total });
+      expect(mockLogger.error.notCalled).to.be.true;
+    });
+
+    it('should call the fetchAuctions twice when the auctions is less than the total', async () => {
+      const firstAuctionCallResult: ICarOnSaleRunningAuctionResponse = {
+        page: 1,
+        total: 2,
+        items: [
+          {
+            currentHighestBidValue: 7,
+            minimumRequiredAsk: 6,
+            numBids: 6,
+          },
+        ],
+      };
+
+      const secondAuctionResult: ICarOnSaleRunningAuctionResponse = {
+        page: 1,
+        total: 2,
+        items: [
+          {
+            currentHighestBidValue: 56,
+            minimumRequiredAsk: 65,
+            numBids: 8,
+          },
+        ],
+      };
+
+      const fetchAuctionsStub = sinon.stub();
+
+      fetchAuctionsStub.onFirstCall().resolves(firstAuctionCallResult);
+      fetchAuctionsStub.onSecondCall().resolves(secondAuctionResult);
+
+      carOnSaleClient.fetchAuctions = fetchAuctionsStub;
+
+      const result = await carOnSaleClient.getRunningAuctions();
+
+      expect(result).to.deep.equal({
+        items: [...firstAuctionCallResult.items, ...secondAuctionResult.items],
+        total: 2,
+      });
+      expect(fetchAuctionsStub.callCount).to.equal(2);
+      expect(fetchAuctionsStub.firstCall.calledWithExactly({ limit: 4000, offset: 0 }));
+      expect(fetchAuctionsStub.secondCall.calledWithExactly({ limit: 4000, offset: 1 }));
       expect(mockLogger.error.notCalled).to.be.true;
     });
 
     it('should throw an error when the requests to get auctions fails', async () => {
-      nockInstance.reply(401, { status: 401, message: 'Request Failed' });
-
-      carOnSaleClient['authCredentials'] = {
-        token: 'mocked-token',
-        userId: 'mocked-user-id',
-      };
+      const fetchAuctionsStub = sinon.stub();
+      fetchAuctionsStub.throws(new HttpClientException(401, {
+        statusCode: 401,
+        message: 'Request Failed',
+      }));
+      carOnSaleClient.fetchAuctions = fetchAuctionsStub;
 
       try {
         await carOnSaleClient.getRunningAuctions();
@@ -164,6 +211,59 @@ describe('CarOnSaleClient', () => {
       await carOnSaleClient['authenticate']();
 
       expect(mockLogger.error.notCalled).to.be.true;
+    });
+  });
+
+  describe('fetchAuctions', () => {
+    it('should return running auctions when authentication is successful', async () => {
+      const auctions: ICarOnSaleRunningAuctionResponse = {
+        page: 1,
+        total: 1,
+        items: [
+          {
+            currentHighestBidValue: 7,
+            minimumRequiredAsk: 6,
+            numBids: 6,
+          },
+        ],
+      };
+
+      nockInstance
+        .get('/v2/auction/buyer/')
+        .query({
+          filter: JSON.stringify({ limit: 4000, offset: 0 }),
+        })
+        .reply(200, auctions);
+
+      carOnSaleClient['authCredentials'] = {
+        token: 'mocked-token',
+        userId: 'mocked-user-id',
+      };
+
+      const result = await carOnSaleClient.getRunningAuctions();
+
+      expect(result).to.deep.equal({ items: auctions.items, total: auctions.total });
+      expect(mockLogger.error.notCalled).to.be.true;
+    });
+
+    it('should throw an error when the requests to get auctions fails', async () => {
+
+      nockInstance
+        .get('/v2/auction/buyer/')
+        .query({
+          filter: JSON.stringify({ limit: 4000, offset: 0 }),
+        }).reply(401, { status: 401, message: 'Request Failed' });
+
+      carOnSaleClient['authCredentials'] = {
+        token: 'mocked-token',
+        userId: 'mocked-user-id',
+      };
+
+      try {
+        await carOnSaleClient.fetchAuctions({ limit: 4000, offset: 0 });
+      } catch (error) {
+        expect(error).to.be.an.instanceOf(HttpClientException);
+      }
     });
   });
 });

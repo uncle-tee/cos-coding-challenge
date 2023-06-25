@@ -1,4 +1,4 @@
-import axios, { AxiosHeaderValue, AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpClientException } from '../exceptions/HttpClientException';
 
 export abstract class HttpClient {
@@ -15,7 +15,7 @@ export abstract class HttpClient {
   get<R>(
     path: string,
     params: { [key: string]: string },
-    headers?: { [key: string]: AxiosHeaderValue },
+    headers?: { [key: string]: string },
   ): Promise<R> {
     return this.axiosInstance.get(path, {
       params,

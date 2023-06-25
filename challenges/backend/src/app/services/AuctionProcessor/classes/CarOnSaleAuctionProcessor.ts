@@ -4,7 +4,9 @@ import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
 import { ICarOnSaleClient } from '../../CarOnSaleClient/interface/ICarOnSaleClient';
 import { ICarOnSaleAuctionProcessor } from '../interface/ICarOnSaleAuctionProcessor';
-import { ICarOnSaleAuction } from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
+import {
+  ICarOnSaleRunningAuctions,
+} from '../../CarOnSaleClient/interface/ICarOnSaleAuction';
 import { ILogger } from '../../Logger/interface/ILogger';
 
 @injectable()
@@ -17,17 +19,13 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
 
   async summarizeAuctions(): Promise<ICarOnSaleAuctionProcessorResult> {
     try {
-      let availableAuctions = await this.carOnSaleClient.getRunningAuctions();
+      const runningAuctions = await this.carOnSaleClient.getRunningAuctions();
       return {
         averageNumberOfBids:
-          this.calculateAverageNumberOfBids(
-            availableAuctions,
-          ),
+          this.calculateAverageNumberOfBids(runningAuctions),
         averagePercentageOfAuctionProgress:
-          this.calculateAveragePercentageOdAuctionProgress(
-            availableAuctions,
-          ),
-        numberOfAuctions: availableAuctions.length,
+          this.calculateAveragePercentageOfAuctionProgress(runningAuctions),
+        numberOfAuctions: runningAuctions.total,
       };
     } catch (e) {
       this.logger.error(e.message);
@@ -36,31 +34,31 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
   }
 
   public calculateAverageNumberOfBids(
-    carOnSaltAuctions: ICarOnSaleAuction[],
+    { total, items: auctions }: ICarOnSaleRunningAuctions,
   ): number {
-    return +carOnSaltAuctions
+    return +auctions
       .filter(auction => auction.numBids)
       .reduce(
         (previous, currentValue) =>
-          previous + (+currentValue.numBids / carOnSaltAuctions.length),
+          previous + (+currentValue.numBids / total),
         0,
       )
       .toFixed(2);
   }
 
-  public calculateAveragePercentageOdAuctionProgress(
-    carOnSaltAuctions: ICarOnSaleAuction[],
+  public calculateAveragePercentageOfAuctionProgress(
+    { total, items: auctions }: ICarOnSaleRunningAuctions,
   ): number {
-    return +carOnSaltAuctions
+    return +auctions
       .filter(
         auction => auction.currentHighestBidValue && auction.minimumRequiredAsk,
       )
       .reduce((previousValue, currentValue) => {
         const { currentHighestBidValue, minimumRequiredAsk } = currentValue;
-        let percentageAuctionProgress =
+        const percentageAuctionProgress =
           (currentHighestBidValue / minimumRequiredAsk) * 100;
         return (
-          previousValue + (+percentageAuctionProgress / carOnSaltAuctions.length)
+          previousValue + (+percentageAuctionProgress / total)
         );
       }, 0)
       .toFixed(2);
