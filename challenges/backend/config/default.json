@@ -2,8 +2,8 @@
   "api": {
     "carOnSale": {
       "url": "https://api-core-dev.caronsale.de/api",
-      "email": "email",
-      "password": "password"
+      "email": "buyer-challenge@caronsale.de",
+      "password": "Test123."
     }
   }
 }
