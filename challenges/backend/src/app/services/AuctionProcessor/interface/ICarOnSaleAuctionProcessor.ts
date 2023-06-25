@@ -11,5 +11,5 @@ export interface ICarOnSaleAuctionProcessor {
    *
    * @return Promise<ICarOnSaleAuctionProcessorResult>
    */
-  processor(): Promise<ICarOnSaleAuctionProcessorResult>;
+  summarizeAuctions(): Promise<ICarOnSaleAuctionProcessorResult>;
 }

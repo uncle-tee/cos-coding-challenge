@@ -3,7 +3,8 @@
     "carOnSale": {
       "url": "https://api-core-dev.caronsale.de/api",
       "email": "buyer-challenge@caronsale.de",
-      "password": "Test123."
+      "password": "Test123.",
+      "limit": "4000"
     }
   }
 }

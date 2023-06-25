@@ -28,7 +28,7 @@ describe('CarOnSaleClient', () => {
     })
       .get('/v2/auction/buyer/')
       .query({
-        filter: JSON.stringify({ limit: 5000, offset: 0 }),
+        filter: JSON.stringify({ limit: 4000, offset: 0 }),
       });
     carOnSaleClient = new CarOnSaleClient(mockLogger);
   });

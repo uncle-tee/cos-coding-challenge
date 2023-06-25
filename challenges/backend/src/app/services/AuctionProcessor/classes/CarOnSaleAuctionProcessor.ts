@@ -15,16 +15,16 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
     @inject(DependencyIdentifier.LOGGER) private logger: ILogger,
   ) {}
 
-  async processor(): Promise<ICarOnSaleAuctionProcessorResult> {
+  async summarizeAuctions(): Promise<ICarOnSaleAuctionProcessorResult> {
     try {
       let availableAuctions = await this.carOnSaleClient.getRunningAuctions();
       return {
         averageNumberOfBids:
-          CarOnSaleAuctionProcessor.calculateAverageNumberOfBids(
+          this.calculateAverageNumberOfBids(
             availableAuctions,
           ),
         averagePercentageOfAuctionProgress:
-          CarOnSaleAuctionProcessor.calculateAveragePercentageOdAuctionProgress(
+          this.calculateAveragePercentageOdAuctionProgress(
             availableAuctions,
           ),
         numberOfAuctions: availableAuctions.length,
@@ -35,20 +35,20 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
     }
   }
 
-  private static calculateAverageNumberOfBids(
+  public calculateAverageNumberOfBids(
     carOnSaltAuctions: ICarOnSaleAuction[],
   ): number {
     return +carOnSaltAuctions
       .filter(auction => auction.numBids)
       .reduce(
         (previous, currentValue) =>
-          previous + +currentValue.numBids / carOnSaltAuctions.length,
+          previous + (+currentValue.numBids / carOnSaltAuctions.length),
         0,
       )
       .toFixed(2);
   }
 
-  private static calculateAveragePercentageOdAuctionProgress(
+  public calculateAveragePercentageOdAuctionProgress(
     carOnSaltAuctions: ICarOnSaleAuction[],
   ): number {
     return +carOnSaltAuctions
@@ -60,7 +60,7 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
         let percentageAuctionProgress =
           (currentHighestBidValue / minimumRequiredAsk) * 100;
         return (
-          previousValue + +percentageAuctionProgress / carOnSaltAuctions.length
+          previousValue + (+percentageAuctionProgress / carOnSaltAuctions.length)
         );
       }, 0)
       .toFixed(2);

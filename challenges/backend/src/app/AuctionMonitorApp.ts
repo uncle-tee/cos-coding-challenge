@@ -19,7 +19,7 @@ export class AuctionMonitorApp {
 
     try {
       let auctionCalculatorResult =
-        await this.auctionCalculatorService.processor();
+        await this.auctionCalculatorService.summarizeAuctions();
       this.logger.log(
         `ACTIONS TOTAL BIDS RESULT ${auctionCalculatorResult.numberOfAuctions}`,
       );

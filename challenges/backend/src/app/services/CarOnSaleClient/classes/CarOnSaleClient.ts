@@ -1,8 +1,5 @@
 import 'reflect-metadata';
-import {
-  ICarOnSaleAuction,
-  ICarOnSaleRunningActionResponse,
-} from '../interface/ICarOnSaleAuction';
+import { ICarOnSaleAuction, ICarOnSaleRunningActionResponse } from '../interface/ICarOnSaleAuction';
 import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
 import { ILogger } from '../../Logger/interface/ILogger';
@@ -10,10 +7,7 @@ import config from 'config';
 import { ICarOnSaleClient } from '../interface/ICarOnSaleClient';
 import { HttpClient } from '../../NetworkClient/classes/HttpClient';
 import { HttpClientException } from '../../NetworkClient/exceptions/HttpClientException';
-import {
-  CarOnSaleException,
-  ErrorMessage,
-} from '../exeptions/CarOnSaleException';
+import { CarOnSaleException, ErrorMessage } from '../exeptions/CarOnSaleException';
 
 @injectable()
 export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
@@ -27,21 +21,11 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
     await this.authenticate();
     const auctions: ICarOnSaleAuction[] = [];
     let offset = 0;
-    const limit = 5000;
+    const limit: number = config.get<number>('api.carOnSale.limit');
     let hasMoreData = true;
     try {
       while (hasMoreData) {
-        const queryParams = {
-          filter: JSON.stringify({ limit, offset }),
-        };
-        const auctionItems: ICarOnSaleRunningActionResponse = await this.get(
-          '/v2/auction/buyer/',
-          queryParams,
-          {
-            authtoken: this.authCredentials.token,
-            userid: this.authCredentials.userId,
-          },
-        );
+        const auctionItems: ICarOnSaleRunningActionResponse = await this.fetchPage({limit, offset});
         auctions.push(...auctionItems.items);
         offset += limit;
         if (auctionItems.items.length < limit) {
@@ -59,6 +43,20 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
       }
       throw e;
     }
+  }
+
+  fetchPage({ limit, offset }:{ limit: number, offset: number }): Promise<ICarOnSaleRunningActionResponse>{
+    const queryParams = {
+      filter: JSON.stringify({ limit, offset }),
+    };
+    return this.get(
+      '/v2/auction/buyer/',
+      queryParams,
+      {
+        authtoken: this.authCredentials.token,
+        userid: this.authCredentials.userId,
+      },
+    );
   }
 
   /**
