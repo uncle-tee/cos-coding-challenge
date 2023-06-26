@@ -72,6 +72,11 @@ describe('CarOnSaleAuctionProcessor', () => {
     });
 
     describe('calculateAverageNumberOfBids', () => {
+      it('returns 0 when the auctions is empty', () => {
+        const result = auctionProcessor.calculateAverageNumberOfBids([]);
+        expect(result).to.equal(0);
+      });
+
       it('calculates the average number of bids correctly', () => {
         const result = auctionProcessor.calculateAverageNumberOfBids(mockAuctions);
         expect(result).to.equal(12.5);
@@ -79,6 +84,13 @@ describe('CarOnSaleAuctionProcessor', () => {
     });
 
     describe('calculateAveragePercentageOfAuctionProgress', () => {
+
+      it('returns 0 when the auctions is empty', () => {
+        const result = auctionProcessor.calculateAveragePercentageOfAuctionProgress([]);
+        expect(result).to.equal(0);
+      });
+
+
       it('calculates the average percentage of auction progress correctly', () => {
         const result = auctionProcessor.calculateAveragePercentageOfAuctionProgress(mockAuctions);
         expect(result).to.equal(84.76);
