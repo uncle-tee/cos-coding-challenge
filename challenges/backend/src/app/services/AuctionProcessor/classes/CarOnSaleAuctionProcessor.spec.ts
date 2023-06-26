@@ -93,6 +93,28 @@ describe('CarOnSaleAuctionProcessor', () => {
         const result = auctionProcessor.calculateAveragePercentageOfAuctionProgress(mockAuctions);
         expect(result).to.equal(84.76);
       });
+
+      it('should return 0 when the currentHighestBidValue is 0', () => {
+        const mockAuctions = [{
+          id: '45675',
+          currentHighestBidValue: 0,
+          minimumRequiredAsk: 15,
+          numBids: 10,
+        }];
+        const result = auctionProcessor.calculateAveragePercentageOfAuctionProgress(mockAuctions);
+        expect(result).to.equal(0);
+      });
+
+      it('should return 0 when the currentHighestBidValue is null and minimumRequiredAsk is null', () => {
+        const mockAuctions = [{
+          id: '45675',
+          currentHighestBidValue: null,
+          minimumRequiredAsk: null,
+          numBids: 10,
+        }];
+        const result = auctionProcessor.calculateAveragePercentageOfAuctionProgress(mockAuctions);
+        expect(result).to.equal(0);
+      });
     });
   });
 });

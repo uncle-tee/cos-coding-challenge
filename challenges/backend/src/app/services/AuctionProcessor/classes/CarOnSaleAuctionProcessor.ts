@@ -50,13 +50,22 @@ export class CarOnSaleAuctionProcessor implements ICarOnSaleAuctionProcessor {
    * @param auctions
    */
   public calculateAveragePercentageOfAuctionProgress(auctions: ICarOnSaleAuction[]): number {
-    const sumOfAuctionProgress: number[] = auctions
-      .filter(auction => auction.currentHighestBidValue && auction.minimumRequiredAsk)
-      .map(auction => {
-        const { currentHighestBidValue, minimumRequiredAsk } = auction;
-        return currentHighestBidValue / minimumRequiredAsk;
-      });
+    if (!auctions.length) {
+      return 0;
+    }
+    let progressSum = auctions.reduce((previousAuction, currentAuction) => {
+      const { currentHighestBidValue, minimumRequiredAsk } = currentAuction;
+      if (currentHighestBidValue === null || minimumRequiredAsk === null) {
+        return previousAuction;
+      }
+      if (currentHighestBidValue === 0) {
+        return previousAuction;
+      }
+      return previousAuction + (currentHighestBidValue / minimumRequiredAsk);
+    }, 0);
 
-    return +(100 * MathUtil.findAverage(sumOfAuctionProgress)).toFixed(2);
+    return +((progressSum / auctions.length) * 100).toFixed(2);
+
+
   }
 }
