@@ -1,5 +1,5 @@
 export const DependencyIdentifier = {
   LOGGER: 'logger',
   CAR_ON_SALE_CLIENT: 'car_on_sale_client',
-  AUCTION_SERVICE: 'AUCTION_SERVICE',
+  AUCTION_SERVICE: 'action_service',
 };
