@@ -64,7 +64,7 @@ describe('CarOnSaleClient', () => {
       expect(mockLogger.error.notCalled).to.be.true;
     });
 
-    it('should call the fetchAuctions twice when the auctions is less than the total', async () => {
+    it('should call the fetchAuctions twice when the auctions is less than the total on the first call', async () => {
       const firstAuctionCallResult: ICarOnSaleRunningAuctionResponse = {
         page: 1,
         total: 2,
@@ -132,8 +132,9 @@ describe('CarOnSaleClient', () => {
   });
 
   it('should throw the error from authenticate when the authentication method throws error', async () => {
-    carOnSaleClient['authCredentials'] = null;
-
+    const authenticateStub = sinon.stub();
+    authenticateStub.throws(new CarOnSaleException(ErrorMessage.AUTHENTICATION))
+    carOnSaleClient['authenticate'] = authenticateStub;
     try {
       await carOnSaleClient.getRunningAuctions();
     } catch (error) {

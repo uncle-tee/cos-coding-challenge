@@ -1,5 +1,9 @@
 import 'reflect-metadata';
-import { ICarOnSaleAuction, ICarOnSaleRunningAuctionResponse } from '../interface/ICarOnSaleAuction';
+import {
+  ICarOnSaleAuction,
+  ICarOnSaleAuthenticationRequest,
+  ICarOnSaleRunningAuctionResponse,
+} from '../interface/ICarOnSaleAuction';
 import { inject, injectable } from 'inversify';
 import { DependencyIdentifier } from '../../../DependencyIdentifiers';
 import { ILogger } from '../../Logger/interface/ILogger';
@@ -17,12 +21,14 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
     super(config.get('api.carOnSale.url'));
   }
 
+
   /**
-   *This method gets running auctions from.
-   * Due to uncertainty of the endpoint returning huge amount of records,
-   * Its loops through makes the request using limit and offset and will keep pulling the records until the auctions
-   * in memory is equal to the total count,
-   * @return  Promise<ICarOnSaleAuction[]>
+   *  This method retrieves running auctions from the running auction endpoint using fetchAuctions.
+   *    Due to the uncertainty of the endpoint returning a large number of records,
+   *    it loops through the requests using limit and offset. It will continue pulling the records until the auctions
+   *    in memory are equal to the total count.
+   *    @return Promise<ICarOnSaleAuction[]> - A promise that resolves to an array of running auctions.
+   *    @throws CarOnSaleException - If an exception occurs during the retrieval process.
    */
   async getRunningAuctions(): Promise<ICarOnSaleAuction[]> {
     const auctions: ICarOnSaleAuction[] = [];
@@ -66,7 +72,7 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
    * @private
    */
   private async authenticate() {
-    const { email, password } = config.get<{ email: string; password: string }>('api.carOnSale');
+    const { email, password } = config.get<ICarOnSaleAuthenticationRequest>('api.carOnSale');
     try {
       if (!this.authCredentials) {
         this.authCredentials = await this.put(`/v1/authentication/${email}`, {
