@@ -20,13 +20,13 @@ describe('CarOnSaleAuctionProcessor', () => {
     mockLogger = sinon.createStubInstance<ILogger>(Logger);
     mockAuctions = [
       {
-        id: "45675",
+        id: '45675',
         currentHighestBidValue: 10,
         minimumRequiredAsk: 15,
         numBids: 10,
       },
       {
-        id: "45675",
+        id: '45675',
         currentHighestBidValue: 36,
         minimumRequiredAsk: 35,
         numBids: 15,
@@ -84,12 +84,10 @@ describe('CarOnSaleAuctionProcessor', () => {
     });
 
     describe('calculateAveragePercentageOfAuctionProgress', () => {
-
       it('returns 0 when the auctions is empty', () => {
         const result = auctionProcessor.calculateAveragePercentageOfAuctionProgress([]);
         expect(result).to.equal(0);
       });
-
 
       it('calculates the average percentage of auction progress correctly', () => {
         const result = auctionProcessor.calculateAveragePercentageOfAuctionProgress(mockAuctions);

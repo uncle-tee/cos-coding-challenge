@@ -20,7 +20,7 @@ describe('CarOnSaleClient', () => {
     nockInstance = nock('https://api-core-dev.caronsale.de/api', {
       reqheaders: {
         authtoken: 'mocked-token',
-        userid: 'mocked-user-id'
+        userid: 'mocked-user-id',
       },
     });
     carOnSaleClient = new CarOnSaleClient(mockLogger);
@@ -43,7 +43,7 @@ describe('CarOnSaleClient', () => {
         total: 1,
         items: [
           {
-            id: "35464",
+            id: '35464',
             currentHighestBidValue: 7,
             minimumRequiredAsk: 6,
             numBids: 6,
@@ -70,7 +70,7 @@ describe('CarOnSaleClient', () => {
         total: 2,
         items: [
           {
-            id: "45464",
+            id: '45464',
             currentHighestBidValue: 7,
             minimumRequiredAsk: 6,
             numBids: 6,
@@ -83,7 +83,7 @@ describe('CarOnSaleClient', () => {
         total: 2,
         items: [
           {
-            id: "35464",
+            id: '35464',
             currentHighestBidValue: 56,
             minimumRequiredAsk: 65,
             numBids: 8,
@@ -220,7 +220,7 @@ describe('CarOnSaleClient', () => {
         total: 1,
         items: [
           {
-            id: "565746",
+            id: '565746',
             currentHighestBidValue: 7,
             minimumRequiredAsk: 6,
             numBids: 6,
@@ -237,7 +237,7 @@ describe('CarOnSaleClient', () => {
         userId: 'mocked-user-id',
       };
 
-      const result = await carOnSaleClient.fetchAuctions({limit: 1000, offset: 0});
+      const result = await carOnSaleClient.fetchAuctions({ limit: 1000, offset: 0 });
 
       expect(result).to.deep.equal(auctions);
       expect(mockLogger.error.notCalled).to.be.true;
