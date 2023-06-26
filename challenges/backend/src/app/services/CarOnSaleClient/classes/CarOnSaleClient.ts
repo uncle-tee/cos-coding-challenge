@@ -42,6 +42,7 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
         total = auctionItems.total;
         hasMoreData = auctions.length < auctionItems.total;
       }
+      this.logger.log(`AUCTION TOTAL = [${total}]:: AUCTIONS PULLED [${auctions.length}]`);
       return auctions;
     } catch (e) {
       if (e instanceof HttpClientException) {
@@ -56,10 +57,9 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
   }
 
   async fetchAuctions({ limit, offset }: { limit: number; offset: number }): Promise<ICarOnSaleRunningAuctionResponse> {
-    const queryParams = {
-      filter: JSON.stringify({ limit, offset }),
-    };
-    return this.get('/v2/auction/buyer/', queryParams, {
+    this.logger.log(`FETCH AUCTIONS WITH LIMIT AND OFFSET: limit ${limit} - offset ${offset}`);
+    let path = `/v2/auction/buyer/?filter=${encodeURIComponent(JSON.stringify({ limit, offset }))}`;
+    return this.get(path, {
       authtoken: this.authCredentials.token,
       userid: this.authCredentials.userId,
     });

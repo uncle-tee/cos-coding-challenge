@@ -20,8 +20,7 @@ describe('CarOnSaleClient', () => {
     nockInstance = nock('https://api-core-dev.caronsale.de/api', {
       reqheaders: {
         authtoken: 'mocked-token',
-        userid: 'mocked-user-id',
-        'User-Agent': 'proxy',
+        userid: 'mocked-user-id'
       },
     });
     carOnSaleClient = new CarOnSaleClient(mockLogger);
@@ -44,6 +43,7 @@ describe('CarOnSaleClient', () => {
         total: 1,
         items: [
           {
+            id: "35464",
             currentHighestBidValue: 7,
             minimumRequiredAsk: 6,
             numBids: 6,
@@ -70,6 +70,7 @@ describe('CarOnSaleClient', () => {
         total: 2,
         items: [
           {
+            id: "45464",
             currentHighestBidValue: 7,
             minimumRequiredAsk: 6,
             numBids: 6,
@@ -82,6 +83,7 @@ describe('CarOnSaleClient', () => {
         total: 2,
         items: [
           {
+            id: "35464",
             currentHighestBidValue: 56,
             minimumRequiredAsk: 65,
             numBids: 8,
@@ -218,6 +220,7 @@ describe('CarOnSaleClient', () => {
         total: 1,
         items: [
           {
+            id: "565746",
             currentHighestBidValue: 7,
             minimumRequiredAsk: 6,
             numBids: 6,
@@ -226,10 +229,7 @@ describe('CarOnSaleClient', () => {
       };
 
       nockInstance
-        .get('/v2/auction/buyer/')
-        .query({
-          filter: JSON.stringify({ limit: 4000, offset: 0 }),
-        })
+        .get(`/v2/auction/buyer/?filter=${encodeURIComponent(JSON.stringify({ limit: 1000, offset: 0 }))}`)
         .reply(200, auctions);
 
       carOnSaleClient['authCredentials'] = {
@@ -237,18 +237,15 @@ describe('CarOnSaleClient', () => {
         userId: 'mocked-user-id',
       };
 
-      const result = await carOnSaleClient.getRunningAuctions();
+      const result = await carOnSaleClient.fetchAuctions({limit: 1000, offset: 0});
 
-      expect(result).to.deep.equal(auctions.items);
+      expect(result).to.deep.equal(auctions);
       expect(mockLogger.error.notCalled).to.be.true;
     });
 
     it('should throw an error when the requests to get auctions fails', async () => {
       nockInstance
-        .get('/v2/auction/buyer/')
-        .query({
-          filter: JSON.stringify({ limit: 4000, offset: 0 }),
-        })
+        .get(`/v2/auction/buyer/?filter=${encodeURIComponent(JSON.stringify({ limit: 1000, offset: 0 }))}`)
         .reply(401, { status: 401, message: 'Request Failed' });
 
       carOnSaleClient['authCredentials'] = {
@@ -257,7 +254,7 @@ describe('CarOnSaleClient', () => {
       };
 
       try {
-        await carOnSaleClient.fetchAuctions({ limit: 4000, offset: 0 });
+        await carOnSaleClient.fetchAuctions({ limit: 1000, offset: 0 });
       } catch (error) {
         expect(error).to.be.an.instanceOf(HttpClientException);
       }

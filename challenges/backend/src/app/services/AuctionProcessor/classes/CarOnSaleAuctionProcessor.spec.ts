@@ -20,11 +20,13 @@ describe('CarOnSaleAuctionProcessor', () => {
     mockLogger = sinon.createStubInstance<ILogger>(Logger);
     mockAuctions = [
       {
+        id: "45675",
         currentHighestBidValue: 10,
         minimumRequiredAsk: 15,
         numBids: 10,
       },
       {
+        id: "45675",
         currentHighestBidValue: 36,
         minimumRequiredAsk: 35,
         numBids: 15,

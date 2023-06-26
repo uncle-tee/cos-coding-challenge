@@ -12,11 +12,9 @@ export abstract class HttpClient {
     this._initializeResponseInterceptor();
   }
 
-  get<R>(path: string, params: { [key: string]: string }, headers?: { [key: string]: string }): Promise<R> {
+  get<R>(path: string, headers?: { [key: string]: string }): Promise<R> {
     return this.axiosInstance.get(path, {
-      params,
       headers: {
-        'User-Agent': 'proxy',
         Accept: 'application/json',
         ...headers,
       },
