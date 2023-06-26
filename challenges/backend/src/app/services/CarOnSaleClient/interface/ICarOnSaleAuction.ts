@@ -13,7 +13,6 @@ export interface ICarOnSaleRunningAuctionResponse {
   total: number;
 }
 
-
 export interface ICarOnSaleAuthenticationRequest {
   email: string;
   password: string;

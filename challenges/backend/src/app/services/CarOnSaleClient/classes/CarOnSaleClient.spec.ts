@@ -133,7 +133,7 @@ describe('CarOnSaleClient', () => {
 
   it('should throw the error from authenticate when the authentication method throws error', async () => {
     const authenticateStub = sinon.stub();
-    authenticateStub.throws(new CarOnSaleException(ErrorMessage.AUTHENTICATION))
+    authenticateStub.throws(new CarOnSaleException(ErrorMessage.AUTHENTICATION));
     carOnSaleClient['authenticate'] = authenticateStub;
     try {
       await carOnSaleClient.getRunningAuctions();

@@ -21,7 +21,6 @@ export class CarOnSaleClient extends HttpClient implements ICarOnSaleClient {
     super(config.get('api.carOnSale.url'));
   }
 
-
   /**
    *  This method retrieves running auctions from the running auction endpoint using fetchAuctions.
    *    Due to the uncertainty of the endpoint returning a large number of records,
